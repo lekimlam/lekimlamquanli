@@ -1,0 +1,8 @@
+{
+  "name": "Admin Dashboard",
+  "description": "Quản lý tài khoản với tích hợp nhạc SoundCloud.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
