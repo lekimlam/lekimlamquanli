@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Music, ExternalLink, GripVertical, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Some cool default tracks for the admin to vibe to
 const DEFAULT_TRACKS = [
+  'https://soundcloud.com/theanh02/nguoi-thua-teah-remix',
   'https://soundcloud.com/chillhopdotcom/kupla-evening-tide',
   'https://soundcloud.com/monstercat/aero-chord-surface'
 ];
 
 export default function MusicSection() {
-  const [links, setLinks] = useState<string[]>(DEFAULT_TRACKS);
+  const [links, setLinks] = useState<string[]>(() => {
+    const saved = localStorage.getItem('admin_music_links');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return DEFAULT_TRACKS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('admin_music_links', JSON.stringify(links));
+  }, [links]);
+
   const [newLink, setNewLink] = useState('');
   const [error, setError] = useState('');
 
@@ -18,8 +32,17 @@ export default function MusicSection() {
     setError('');
     
     if (newLink && newLink.includes('soundcloud.com')) {
-      if (!links.includes(newLink)) {
-        setLinks([newLink, ...links]);
+      let finalLink = newLink.trim();
+      if (finalLink.includes('m.soundcloud.com')) {
+        finalLink = finalLink.replace('m.soundcloud.com', 'soundcloud.com');
+      }
+      // Remove tracking query parameters
+      if (finalLink.includes('?')) {
+        finalLink = finalLink.split('?')[0];
+      }
+
+      if (!links.includes(finalLink)) {
+        setLinks([finalLink, ...links]);
       } else {
         setError('Bài hát này đã tồn tại trong danh sách.');
       }
@@ -105,7 +128,7 @@ export default function MusicSection() {
               <div className="w-full bg-zinc-950 p-3">
                 <iframe
                   width="100%"
-                  height="20"
+                  height="166"
                   scrolling="no"
                   frameBorder="no"
                   allow="autoplay"

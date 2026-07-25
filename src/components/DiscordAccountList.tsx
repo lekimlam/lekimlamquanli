@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Plus, Search, Trash2, Edit2, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Search, Trash2, Edit2, MessageSquare, X } from 'lucide-react';
 import { DiscordAccount } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
 
 const INITIAL_ACCOUNTS: DiscordAccount[] = [
   { id: '1', discordId: '123456789012345678', username: 'lekimlam', discriminator: '0', avatarUrl: 'https://cdn.discordapp.com/embed/avatars/0.png', status: 'online', joinedAt: '2025-01-01' },
@@ -10,8 +11,31 @@ const INITIAL_ACCOUNTS: DiscordAccount[] = [
 ];
 
 export default function DiscordAccountList() {
-  const [accounts, setAccounts] = useState<DiscordAccount[]>(INITIAL_ACCOUNTS);
+  const [accounts, setAccounts] = useState<DiscordAccount[]>(() => {
+    const saved = localStorage.getItem('admin_discord_accounts');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return INITIAL_ACCOUNTS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('admin_discord_accounts', JSON.stringify(accounts));
+  }, [accounts]);
+
   const [searchTerm, setSearchTerm] = useState('');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<DiscordAccount | null>(null);
+  const [formData, setFormData] = useState({
+    discordId: '',
+    username: '',
+    discriminator: '0',
+    avatarUrl: '',
+    status: 'online' as 'online' | 'idle' | 'dnd' | 'offline'
+  });
 
   const filteredAccounts = accounts.filter(
     (acc) =>
@@ -23,6 +47,48 @@ export default function DiscordAccountList() {
     if (confirm('Bạn có chắc chắn muốn xóa tài khoản Discord này?')) {
       setAccounts(accounts.filter((acc) => acc.id !== id));
     }
+  };
+  
+  const handleOpenModal = (account?: DiscordAccount) => {
+    if (account) {
+      setEditingAccount(account);
+      setFormData({
+        discordId: account.discordId,
+        username: account.username,
+        discriminator: account.discriminator,
+        avatarUrl: account.avatarUrl,
+        status: account.status
+      });
+    } else {
+      setEditingAccount(null);
+      setFormData({
+        discordId: '',
+        username: '',
+        discriminator: '0',
+        avatarUrl: `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}.png`,
+        status: 'online'
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingAccount) {
+      setAccounts(accounts.map(acc => 
+        acc.id === editingAccount.id 
+          ? { ...acc, ...formData } 
+          : acc
+      ));
+    } else {
+      const newAccount: DiscordAccount = {
+        id: Date.now().toString(),
+        ...formData,
+        joinedAt: new Date().toISOString().split('T')[0]
+      };
+      setAccounts([...accounts, newAccount]);
+    }
+    setIsModalOpen(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -60,7 +126,10 @@ export default function DiscordAccountList() {
             className="block w-full pl-10 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg text-sm font-medium transition-colors">
+        <button 
+          onClick={() => handleOpenModal()}
+          className="flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg text-sm font-medium transition-colors"
+        >
           <Plus size={16} />
           Thêm tài khoản Discord
         </button>
@@ -106,7 +175,11 @@ export default function DiscordAccountList() {
                     <button className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" title="Nhắn tin">
                       <MessageSquare size={16} />
                     </button>
-                    <button className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" title="Chỉnh sửa">
+                    <button 
+                      onClick={() => handleOpenModal(account)}
+                      className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" 
+                      title="Chỉnh sửa"
+                    >
                       <Edit2 size={16} />
                     </button>
                     <button 
@@ -131,6 +204,87 @@ export default function DiscordAccountList() {
           </tbody>
         </table>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/50">
+                <h3 className="text-lg font-medium text-zinc-100">
+                  {editingAccount ? 'Chỉnh sửa tài khoản Discord' : 'Thêm tài khoản Discord'}
+                </h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-zinc-500 hover:text-zinc-300">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Tên người dùng</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Discord ID</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.discordId}
+                    onChange={(e) => setFormData({ ...formData, discordId: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Trạng thái</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as 'online' | 'idle' | 'dnd' | 'offline' })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  >
+                    <option value="online">Trực tuyến</option>
+                    <option value="idle">Nhàn rỗi</option>
+                    <option value="dnd">Không làm phiền</option>
+                    <option value="offline">Ngoại tuyến</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">URL Avatar (Tùy chọn)</label>
+                  <input
+                    type="url"
+                    value={formData.avatarUrl}
+                    onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  />
+                </div>
+                <div className="pt-4 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    {editingAccount ? 'Cập nhật' : 'Thêm mới'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

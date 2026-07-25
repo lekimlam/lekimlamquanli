@@ -14,11 +14,21 @@ const data = [
 ];
 
 export default function DashboardOverview() {
+  const getLocalStorageCount = (key: string, defaultValue: number) => {
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        return JSON.parse(saved).length.toString();
+      }
+    } catch (e) {}
+    return defaultValue.toString();
+  };
+
   const stats = [
-    { title: 'Tổng tài khoản', value: '1,234', change: '+12%', icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-    { title: 'Tài khoản Discord', value: '856', change: '+5%', icon: MessageSquare, color: 'text-[#5865F2]', bg: 'bg-[#5865F2]/10' },
+    { title: 'Tổng tài khoản', value: getLocalStorageCount('admin_accounts', 3), change: '+12%', icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    { title: 'Tài khoản Discord', value: getLocalStorageCount('admin_discord_accounts', 4), change: '+5%', icon: MessageSquare, color: 'text-[#5865F2]', bg: 'bg-[#5865F2]/10' },
     { title: 'Người dùng mới', value: '124', change: '+18%', icon: UserPlus, color: 'text-green-500', bg: 'bg-green-500/10' },
-    { title: 'Bài hát Playlist', value: '42', change: '+2', icon: Music, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { title: 'Bài hát Playlist', value: getLocalStorageCount('admin_music_links', 3), change: '+2', icon: Music, color: 'text-purple-500', bg: 'bg-purple-500/10' },
   ];
 
   return (

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Plus, Search, Trash2, Edit2, ShieldAlert } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Search, Trash2, Edit2, ShieldAlert, X } from 'lucide-react';
 import { Account } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
 
 const INITIAL_ACCOUNTS: Account[] = [
   { id: '1', username: 'lekimlam', email: 'lekimlam16052015@gmail.com', role: 'admin', status: 'active', createdAt: '2025-01-01' },
@@ -9,8 +10,30 @@ const INITIAL_ACCOUNTS: Account[] = [
 ];
 
 export default function AccountList() {
-  const [accounts, setAccounts] = useState<Account[]>(INITIAL_ACCOUNTS);
+  const [accounts, setAccounts] = useState<Account[]>(() => {
+    const saved = localStorage.getItem('admin_accounts');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return INITIAL_ACCOUNTS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('admin_accounts', JSON.stringify(accounts));
+  }, [accounts]);
+
   const [searchTerm, setSearchTerm] = useState('');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    role: 'user',
+    status: 'active' as 'active' | 'inactive'
+  });
 
   const filteredAccounts = accounts.filter(
     (acc) =>
@@ -28,6 +51,46 @@ export default function AccountList() {
     }
   };
 
+  const handleOpenModal = (account?: Account) => {
+    if (account) {
+      setEditingAccount(account);
+      setFormData({
+        username: account.username,
+        email: account.email,
+        role: account.role,
+        status: account.status
+      });
+    } else {
+      setEditingAccount(null);
+      setFormData({
+        username: '',
+        email: '',
+        role: 'user',
+        status: 'active'
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingAccount) {
+      setAccounts(accounts.map(acc => 
+        acc.id === editingAccount.id 
+          ? { ...acc, ...formData } 
+          : acc
+      ));
+    } else {
+      const newAccount: Account = {
+        id: Date.now().toString(),
+        ...formData,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+      setAccounts([...accounts, newAccount]);
+    }
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex flex-col h-full shadow-lg">
       <div className="p-6 border-b border-zinc-800 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
@@ -43,7 +106,10 @@ export default function AccountList() {
             className="block w-full pl-10 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-zinc-100 text-zinc-900 hover:bg-white rounded-lg text-sm font-medium transition-colors">
+        <button 
+          onClick={() => handleOpenModal()}
+          className="flex items-center gap-2 px-4 py-2 bg-zinc-100 text-zinc-900 hover:bg-white rounded-lg text-sm font-medium transition-colors"
+        >
           <Plus size={16} />
           Thêm tài khoản
         </button>
@@ -89,7 +155,11 @@ export default function AccountList() {
                 <td className="px-6 py-4 text-zinc-500">{account.createdAt}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
-                    <button className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" title="Chỉnh sửa">
+                    <button 
+                      onClick={() => handleOpenModal(account)}
+                      className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" 
+                      title="Chỉnh sửa"
+                    >
                       <Edit2 size={16} />
                     </button>
                     <button 
@@ -115,6 +185,88 @@ export default function AccountList() {
           </tbody>
         </table>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/50">
+                <h3 className="text-lg font-medium text-zinc-100">
+                  {editingAccount ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản mới'}
+                </h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-zinc-500 hover:text-zinc-300">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Tên đăng nhập</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Vai trò</label>
+                  <select
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    <option value="guest">Guest</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Trạng thái</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                  >
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Đã khóa</option>
+                  </select>
+                </div>
+                <div className="pt-4 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    {editingAccount ? 'Cập nhật' : 'Thêm mới'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
