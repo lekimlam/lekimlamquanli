@@ -1,6 +1,6 @@
-import React from 'react';
-import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone } from 'lucide-react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone, MessageSquare, PieChart } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardLayoutProps {
   activeTab: string;
@@ -9,9 +9,15 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
+type DeviceMode = 'desktop' | 'mobile';
+
 export default function DashboardLayout({ activeTab, onTabChange, onLogout, children }: DashboardLayoutProps) {
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>('desktop');
+
   const navItems = [
+    { id: 'overview', label: 'Tổng quan', icon: PieChart },
     { id: 'accounts', label: 'Quản lý tài khoản', icon: Users },
+    { id: 'discord', label: 'Tài khoản Discord', icon: MessageSquare },
     { id: 'music', label: 'Nhạc SoundCloud', icon: Music },
   ];
 
@@ -68,29 +74,54 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-zinc-950">
-        <header className="h-16 flex items-center justify-between px-8 border-b border-zinc-800 bg-zinc-950">
+        <header className="h-16 flex items-center justify-between px-8 border-b border-zinc-800 bg-zinc-950 flex-shrink-0">
           <h2 className="text-lg font-medium text-zinc-100">
             {navItems.find((item) => item.id === activeTab)?.label}
           </h2>
-          <div className="flex items-center gap-2">
-            <button className="p-2 text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors" title="Giao diện máy tính">
-              <Monitor size={18} />
+          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1 rounded-lg">
+            <button 
+              onClick={() => setDeviceMode('desktop')}
+              className={`p-1.5 rounded-md transition-colors ${deviceMode === 'desktop' ? 'bg-zinc-800 text-orange-400' : 'text-zinc-500 hover:text-zinc-300'}`} 
+              title="Giao diện máy tính"
+            >
+              <Monitor size={16} />
             </button>
-            <button className="p-2 text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors" title="Giao diện điện thoại">
-              <Smartphone size={18} />
+            <button 
+              onClick={() => setDeviceMode('mobile')}
+              className={`p-1.5 rounded-md transition-colors ${deviceMode === 'mobile' ? 'bg-zinc-800 text-orange-400' : 'text-zinc-500 hover:text-zinc-300'}`} 
+              title="Giao diện điện thoại"
+            >
+              <Smartphone size={16} />
             </button>
           </div>
         </header>
-        <div className="flex-1 overflow-auto p-8">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-6xl mx-auto h-full"
-          >
-            {children}
-          </motion.div>
+        <div className="flex-1 overflow-hidden relative bg-zinc-950">
+          <div className="absolute inset-0 overflow-auto flex justify-center items-start p-8">
+            <motion.div
+              layout
+              className={`${deviceMode === 'mobile' ? 'w-[375px] min-h-[812px] bg-zinc-950 border-[8px] border-zinc-800 rounded-[3rem] overflow-hidden shadow-2xl relative' : 'w-full max-w-6xl'}`}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {deviceMode === 'mobile' && (
+                <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-50 pointer-events-none">
+                  <div className="w-32 h-6 bg-zinc-800 rounded-b-3xl"></div>
+                </div>
+              )}
+              <div className={deviceMode === 'mobile' ? 'p-4 pt-10 h-full overflow-y-auto hide-scrollbar' : 'h-full'}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {children}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </main>
     </div>

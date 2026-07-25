@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Music, ExternalLink, GripVertical } from 'lucide-react';
+import { Plus, Trash2, Music, ExternalLink, GripVertical, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Some cool default tracks for the admin to vibe to
@@ -11,16 +11,21 @@ const DEFAULT_TRACKS = [
 export default function MusicSection() {
   const [links, setLinks] = useState<string[]>(DEFAULT_TRACKS);
   const [newLink, setNewLink] = useState('');
+  const [error, setError] = useState('');
 
   const handleAddLink = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
     if (newLink && newLink.includes('soundcloud.com')) {
       if (!links.includes(newLink)) {
         setLinks([newLink, ...links]);
+      } else {
+        setError('Bài hát này đã tồn tại trong danh sách.');
       }
       setNewLink('');
     } else {
-      alert('Vui lòng nhập một đường dẫn SoundCloud hợp lệ.');
+      setError('Vui lòng nhập một đường dẫn SoundCloud hợp lệ.');
     }
   };
 
@@ -41,21 +46,33 @@ export default function MusicSection() {
           </div>
         </div>
 
-        <form onSubmit={handleAddLink} className="flex gap-3">
-          <input
-            type="url"
-            value={newLink}
-            onChange={(e) => setNewLink(e.target.value)}
-            placeholder="Dán liên kết SoundCloud vào đây (VD: https://soundcloud.com/...)"
-            className="flex-1 px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
-          />
-          <button
-            type="submit"
-            className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-          >
-            <Plus size={16} />
-            Thêm bài hát
-          </button>
+        <form onSubmit={handleAddLink} className="flex flex-col gap-3">
+          <div className="flex gap-3">
+            <input
+              type="url"
+              value={newLink}
+              onChange={(e) => setNewLink(e.target.value)}
+              placeholder="Dán liên kết SoundCloud vào đây (VD: https://soundcloud.com/...)"
+              className="flex-1 px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+            />
+            <button
+              type="submit"
+              className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+            >
+              <Plus size={16} />
+              Thêm bài hát
+            </button>
+          </div>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2 text-sm text-red-400 bg-red-400/10 p-2 rounded-lg border border-red-500/20"
+            >
+              <AlertCircle size={16} />
+              {error}
+            </motion.div>
+          )}
         </form>
       </div>
 
@@ -85,16 +102,16 @@ export default function MusicSection() {
                   <Trash2 size={16} />
                 </button>
               </div>
-              <div className="w-full h-[166px] bg-zinc-950">
+              <div className="w-full bg-zinc-950 p-3">
                 <iframe
                   width="100%"
-                  height="166"
+                  height="20"
                   scrolling="no"
                   frameBorder="no"
                   allow="autoplay"
-                  src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(link)}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false`}
+                  src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(link)}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false&show_artwork=false`}
                   title={`SoundCloud Player ${index}`}
-                  className="w-full"
+                  className="w-full rounded"
                 ></iframe>
               </div>
             </motion.div>

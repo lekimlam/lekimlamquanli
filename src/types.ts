@@ -6,3 +6,13 @@ export interface Account {
   status: 'active' | 'inactive';
   createdAt: string;
 }
+
+export interface DiscordAccount {
+  id: string;
+  discordId: string;
+  username: string;
+  discriminator: string;
+  avatarUrl: string;
+  status: 'online' | 'idle' | 'dnd' | 'offline';
+  joinedAt: string;
+}

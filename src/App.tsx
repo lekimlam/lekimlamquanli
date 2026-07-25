@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Login from './components/Login';
 import DashboardLayout from './components/DashboardLayout';
+import DashboardOverview from './components/DashboardOverview';
 import AccountList from './components/AccountList';
+import DiscordAccountList from './components/DiscordAccountList';
 import MusicSection from './components/MusicSection';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAdminLoggedIn') === 'true';
   });
-  const [activeTab, setActiveTab] = useState('accounts');
+  const [activeTab, setActiveTab] = useState('overview');
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -49,7 +51,9 @@ export default function App() {
               onTabChange={setActiveTab} 
               onLogout={handleLogout}
             >
+              {activeTab === 'overview' && <DashboardOverview />}
               {activeTab === 'accounts' && <AccountList />}
+              {activeTab === 'discord' && <DiscordAccountList />}
               {activeTab === 'music' && <MusicSection />}
             </DashboardLayout>
           </motion.div>
