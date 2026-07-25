@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Login from './components/Login';
 import DashboardLayout from './components/DashboardLayout';
@@ -6,8 +6,20 @@ import AccountList from './components/AccountList';
 import MusicSection from './components/MusicSection';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('isAdminLoggedIn') === 'true';
+  });
   const [activeTab, setActiveTab] = useState('accounts');
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('isAdminLoggedIn', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('isAdminLoggedIn');
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-orange-500/30">
@@ -21,7 +33,7 @@ export default function App() {
             transition={{ duration: 0.3 }}
             className="min-h-screen flex items-center justify-center p-4"
           >
-            <Login onLogin={() => setIsAuthenticated(true)} />
+            <Login onLogin={handleLogin} />
           </motion.div>
         ) : (
           <motion.div
@@ -35,7 +47,7 @@ export default function App() {
             <DashboardLayout 
               activeTab={activeTab} 
               onTabChange={setActiveTab} 
-              onLogout={() => setIsAuthenticated(false)}
+              onLogout={handleLogout}
             >
               {activeTab === 'accounts' && <AccountList />}
               {activeTab === 'music' && <MusicSection />}
