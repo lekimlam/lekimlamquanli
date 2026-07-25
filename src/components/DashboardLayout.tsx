@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Music, LogOut, LayoutDashboard } from 'lucide-react';
+import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface DashboardLayoutProps {
@@ -72,6 +72,14 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
           <h2 className="text-lg font-medium text-zinc-100">
             {navItems.find((item) => item.id === activeTab)?.label}
           </h2>
+          <div className="flex items-center gap-2">
+            <button className="p-2 text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors" title="Giao diện máy tính">
+              <Monitor size={18} />
+            </button>
+            <button className="p-2 text-zinc-400 hover:text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors" title="Giao diện điện thoại">
+              <Smartphone size={18} />
+            </button>
+          </div>
         </header>
         <div className="flex-1 overflow-auto p-8">
           <motion.div
