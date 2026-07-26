@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash2, Edit2, MessageSquare, X } from 'lucide-react';
+import { Plus, Search, Trash2, Edit2, MessageSquare, X, ExternalLink } from 'lucide-react';
 import { DiscordAccount } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -188,6 +188,13 @@ export default function DiscordAccountList() {
                   <div className="flex justify-end gap-2">
                     <button className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" title="Nhắn tin">
                       <MessageSquare size={16} />
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://discord.com/login', '_blank')}
+                      className="p-1.5 text-zinc-500 hover:text-[#5865F2] transition-colors" 
+                      title="Đăng nhập Discord"
+                    >
+                      <ExternalLink size={16} />
                     </button>
                     <button 
                       onClick={() => handleOpenModal(account)}
