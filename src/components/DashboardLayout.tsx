@@ -20,6 +20,7 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
     { id: 'accounts', label: 'Quản lý tài khoản', icon: Users },
     { id: 'discord', label: 'Tài khoản Discord', icon: MessageSquare },
     { id: 'google', label: 'Google Clone', icon: Chrome },
+    { id: 'vm', label: 'Máy ảo & Game', icon: Monitor },
     { id: 'music', label: 'Nhạc SoundCloud', icon: Music },
   ];
 

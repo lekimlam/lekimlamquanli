@@ -6,6 +6,7 @@ import DashboardOverview from './components/DashboardOverview';
 import AccountList from './components/AccountList';
 import DiscordAccountList from './components/DiscordAccountList';
 import GoogleClone from './components/GoogleClone';
+import VirtualMachine from './components/VirtualMachine';
 import MusicSection from './components/MusicSection';
 
 export default function App() {
@@ -63,6 +64,9 @@ export default function App() {
               </div>
               <div className={activeTab === 'google' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <GoogleClone />
+              </div>
+              <div className={activeTab === 'vm' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
+                <VirtualMachine />
               </div>
               <div className={activeTab === 'music' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <MusicSection />
