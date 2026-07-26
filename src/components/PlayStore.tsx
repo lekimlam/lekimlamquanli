@@ -6,6 +6,7 @@ export default function PlayStore() {
   const [installing, setInstalling] = useState<Record<string, boolean>>({});
 
   const apps = [
+    { name: 'Garena Free Fire', dev: 'Garena International I', rating: '4.5', size: '390 MB', icon: 'https://play-lh.googleusercontent.com/fAW64pAmM1wW6m4YjQ-8e27c1nC6f2L1kX0k9M6b72Q334Q7H4m3pW6-o3Ww=w240-h480-rw' },
     { name: 'Genshin Impact', dev: 'COGNOSPHERE PTE. LTD.', rating: '4.4', size: '254 MB', icon: 'https://play-lh.googleusercontent.com/So91qs_eRRrati6BUs8HuqiCkyRXbGH9h4qOonP-qLhV5G-1f6m-i68m3Z_1x1Q1nQ=w240-h480-rw' },
     { name: 'Roblox', dev: 'Roblox Corporation', rating: '4.4', size: '163 MB', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png' },
     { name: 'AFK Arena', dev: 'LilithGames', rating: '4.6', size: '120 MB', icon: 'https://play-lh.googleusercontent.com/R3aBndbC_iOaU8rMewv5f_c-WSTTfB3T6015R5yVjZ2m6Mhw8k7eXk39R1c1zB7cQQ=w240-h480-rw' },

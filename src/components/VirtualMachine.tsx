@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Wifi, Battery, Signal, Plus, Play, MoreVertical, ShieldCheck, Clock, Settings, RefreshCw } from 'lucide-react';
-import GoogleClone from './GoogleClone';
 import PlayStore from './PlayStore';
 import FileManager from './FileManager';
 
@@ -13,14 +12,25 @@ export default function VirtualMachine() {
   const getAppUrl = (appName: string) => {
     switch (appName) {
       case 'Chrome':
+        return 'https://duckduckgo.com';
       case 'Google Play':
         return 'https://www.google.com/webhp?igu=1';
       case 'Settings':
       case 'Files':
       case 'Auto Clicker':
         return 'https://en.wikipedia.org/wiki/Android';
+      case 'Garena Free Fire':
+        // Real HTML5 shooter game proxying for Free Fire
+        return 'https://play.gamepix.com/pubg-pixel/embed';
+      case 'Roblox':
+        // Blocky multiplayer game
+        return 'https://play.gamepix.com/kogama-wipeout/embed';
+      case 'Genshin':
+        // Action RPG game
+        return 'https://play.gamepix.com/dynasty-war/embed';
+      case 'AFK Arena':
+        return 'https://play.gamepix.com/hero-rescue/embed';
       default:
-        // Default to a retro emulator for games
         return 'https://mkremins.github.io/jsnes/';
     }
   };
@@ -178,11 +188,7 @@ export default function VirtualMachine() {
               {activeApp ? (
                 <div className="absolute inset-0 pt-7 pb-10 z-10 bg-white flex flex-col">
                   {/* Inside App */}
-                  {activeApp === 'Chrome' ? (
-                    <div className="flex-1 overflow-hidden relative bg-zinc-950">
-                       <GoogleClone />
-                    </div>
-                  ) : activeApp === 'Google Play' ? (
+                  {activeApp === 'Google Play' ? (
                     <div className="flex-1 overflow-hidden relative bg-white">
                        <PlayStore />
                     </div>
