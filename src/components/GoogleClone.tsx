@@ -55,10 +55,22 @@ export default function GoogleClone() {
     }
   };
 
-  const navigateTo = (url: string, title: string = 'Website') => {
-    let finalUrl = url;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      finalUrl = `https://${url}`;
+  const navigateTo = (input: string, title: string = 'Website') => {
+    let finalUrl = input;
+    
+    // Check if it's a URL or a search query
+    const isUrl = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/.test(input) || 
+                  input.startsWith('http://') || 
+                  input.startsWith('https://');
+
+    if (isUrl) {
+      if (!input.startsWith('http://') && !input.startsWith('https://')) {
+        finalUrl = `https://${input}`;
+      }
+    } else {
+      // It's a search query, use Google (igu=1 allows iframe embedding for Google Search)
+      finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(input)}`;
+      title = `${input} - Google Search`;
     }
     
     setTabs(tabs.map(t => 
@@ -149,6 +161,13 @@ export default function GoogleClone() {
             className="flex-1 bg-transparent border-none focus:outline-none text-sm text-zinc-300 font-mono"
             spellCheck={false}
           />
+          <button 
+            onClick={() => activeTab.url && window.open(activeTab.url, '_blank')}
+            className="p-1.5 ml-2 text-zinc-500 hover:text-zinc-300 transition-colors shrink-0"
+            title="Open in real browser tab (fixes blank screen)"
+          >
+            <ExternalLink size={16} />
+          </button>
         </div>
       </div>
 
@@ -219,8 +238,8 @@ export default function GoogleClone() {
                   </div>
                   
                   <div className="mt-12 text-center">
-                    <p className="text-zinc-600 text-xs">
-                      Webpages are securely isolated. Popups and external tab navigation are blocked for safety.
+                    <p className="text-zinc-600 text-xs max-w-sm mx-auto">
+                      Note: Many websites (like YouTube or Facebook) block being embedded inside other apps for security. If a site doesn't load, use the <ExternalLink size={12} className="inline mx-1" /> icon in the address bar to open it in a real tab.
                     </p>
                   </div>
                 </div>
