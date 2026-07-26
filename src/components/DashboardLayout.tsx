@@ -127,22 +127,23 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
           <div className="absolute inset-0 overflow-auto flex justify-center items-start p-4 md:p-8">
             <motion.div
               layout
-              className={`
-                w-full h-full 
-                sm:h-auto
-                ${deviceMode === 'mobile' ? 'sm:w-[375px] sm:min-h-[812px] sm:bg-zinc-950 sm:border-[8px] sm:border-zinc-800 sm:rounded-[3rem] sm:shadow-2xl sm:relative sm:overflow-hidden' : 'sm:w-full sm:max-w-6xl'}
-              `}
+              className={`${deviceMode === 'mobile' ? 'hidden sm:block w-[375px] min-h-[812px] bg-zinc-950 border-[8px] border-zinc-800 rounded-[3rem] overflow-hidden shadow-2xl relative' : 'hidden sm:block w-full max-w-6xl'}`}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               {deviceMode === 'mobile' && (
-                <div className="absolute top-0 inset-x-0 h-6 justify-center z-50 pointer-events-none hidden sm:flex">
+                <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-50 pointer-events-none hidden sm:flex">
                   <div className="w-32 h-6 bg-zinc-800 rounded-b-3xl"></div>
                 </div>
               )}
-              <div className={`h-full ${deviceMode === 'mobile' ? 'sm:p-4 sm:pt-10 sm:overflow-y-auto sm:hide-scrollbar' : ''}`}>
+              <div className={deviceMode === 'mobile' ? 'p-4 pt-10 h-full overflow-y-auto hide-scrollbar' : 'h-full'}>
                 {children}
               </div>
             </motion.div>
+            
+            {/* Real Mobile View - No phone frame */}
+            <div className="block sm:hidden w-full h-full">
+              {children}
+            </div>
           </div>
         </div>
       </main>

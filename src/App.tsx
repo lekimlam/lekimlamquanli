@@ -51,19 +51,17 @@ export default function App() {
               onTabChange={setActiveTab} 
               onLogout={handleLogout}
             >
-              <div className="relative w-full h-full">
-                <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'overview' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-                  <DashboardOverview />
-                </div>
-                <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'accounts' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-                  <AccountList />
-                </div>
-                <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'discord' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-                  <DiscordAccountList />
-                </div>
-                <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'music' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-                  <MusicSection />
-                </div>
+              <div className={activeTab === 'overview' ? 'block h-full' : 'hidden'}>
+                <DashboardOverview />
+              </div>
+              <div className={activeTab === 'accounts' ? 'block h-full' : 'hidden'}>
+                <AccountList />
+              </div>
+              <div className={activeTab === 'discord' ? 'block h-full' : 'hidden'}>
+                <DiscordAccountList />
+              </div>
+              <div className={activeTab === 'music' ? 'block h-full' : 'hidden'}>
+                <MusicSection />
               </div>
             </DashboardLayout>
           </motion.div>

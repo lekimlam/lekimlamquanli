@@ -39,8 +39,6 @@ export default function DiscordAccountList() {
     status: 'online' as 'online' | 'idle' | 'dnd' | 'offline'
   });
 
-  const [simulatedLoginAccount, setSimulatedLoginAccount] = useState<DiscordAccount | null>(null);
-
   const filteredAccounts = accounts.filter(
     (acc) =>
       acc.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -192,9 +190,9 @@ export default function DiscordAccountList() {
                       <MessageSquare size={16} />
                     </button>
                     <button 
-                      onClick={() => setSimulatedLoginAccount(account)}
+                      onClick={() => window.open('https://discord.com/login', '_blank')}
                       className="p-1.5 text-zinc-500 hover:text-[#5865F2] transition-colors" 
-                      title="Đăng nhập Discord (Tự động điền)"
+                      title="Đăng nhập Discord"
                     >
                       <ExternalLink size={16} />
                     </button>
@@ -322,76 +320,6 @@ export default function DiscordAccountList() {
                   >
                     {editingAccount ? 'Cập nhật' : 'Thêm mới'}
                   </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {simulatedLoginAccount && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-0 sm:p-4 bg-[#313338] sm:bg-black/80 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="w-full h-full sm:h-auto sm:max-w-[480px] bg-[#313338] sm:rounded-[5px] shadow-2xl overflow-hidden flex flex-col relative p-8 text-center"
-            >
-              <button 
-                onClick={() => setSimulatedLoginAccount(null)}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-200"
-              >
-                <X size={24} />
-              </button>
-              
-              <div className="mb-6 flex justify-center">
-                <svg width="130" height="36" viewBox="0 0 130 36" fill="white" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M109.112 18.0003C109.112 15.0116 107.828 12.3551 105.748 10.4571C103.668 8.5592 100.825 7.42065 97.6698 7.42065C94.5146 7.42065 91.6713 8.5592 89.5913 10.4571C87.5114 12.3551 86.2275 15.0116 86.2275 18.0003C86.2275 20.9891 87.5114 23.6456 89.5913 25.5435C91.6713 27.4415 94.5146 28.58 97.6698 28.58C100.825 28.58 103.668 27.4415 105.748 25.5435C107.828 23.6456 109.112 20.9891 109.112 18.0003ZM97.6698 23.606C96.1135 23.606 94.7571 23.0487 93.7381 22.0621C92.7192 21.0754 92.1152 19.6469 92.1152 18.0003C92.1152 16.3538 92.7192 14.9253 93.7381 13.9386C94.7571 12.952 96.1135 12.3946 97.6698 12.3946C99.226 12.3946 100.582 12.952 101.601 13.9386C102.62 14.9253 103.224 16.3538 103.224 18.0003C103.224 19.6469 102.62 21.0754 101.601 22.0621C100.582 23.0487 99.226 23.606 97.6698 23.606ZM129.414 7.42065C126.259 7.42065 123.415 8.5592 121.335 10.4571C119.255 12.3551 117.972 15.0116 117.972 18.0003C117.972 20.9891 119.255 23.6456 121.335 25.5435C123.415 27.4415 126.259 28.58 129.414 28.58H130V23.606H129.414C127.858 23.606 126.501 23.0487 125.482 22.0621C124.463 21.0754 123.859 19.6469 123.859 18.0003C123.859 16.3538 124.463 14.9253 125.482 13.9386C126.501 12.952 127.858 12.3946 129.414 12.3946H130V7.42065H129.414ZM26.4357 7.42065H20.7513V28.58H26.4357C30.6405 28.58 34.3312 26.852 36.9062 24.0898C39.4812 21.3276 41.1396 17.6534 41.1396 13.5683C41.1396 9.48316 39.4812 5.80894 36.9062 3.04677C34.3312 0.28459 30.6405 -1.44358 26.4357 -1.44358H20.7513V4.42065H26.4357C29.2155 4.42065 31.7588 5.48624 33.6445 7.24036C35.5303 8.99448 36.6346 11.1963 36.6346 13.5683C36.6346 15.9402 35.5303 18.1421 33.6445 19.8962C31.7588 21.6503 29.2155 22.7159 26.4357 22.7159V7.42065ZM68.1259 7.42065C64.9707 7.42065 62.1274 8.5592 60.0475 10.4571C57.9675 12.3551 56.6836 15.0116 56.6836 18.0003C56.6836 20.9891 57.9675 23.6456 60.0475 25.5435C62.1274 27.4415 64.9707 28.58 68.1259 28.58C71.281 28.58 74.1243 27.4415 76.2043 25.5435C78.2842 23.6456 79.5681 20.9891 79.5681 18.0003C79.5681 15.0116 78.2842 12.3551 76.2043 10.4571C74.1243 8.5592 71.281 7.42065 68.1259 7.42065ZM68.1259 23.606C66.5696 23.606 65.2132 23.0487 64.1942 22.0621C63.1753 21.0754 62.5713 19.6469 62.5713 18.0003C62.5713 16.3538 63.1753 14.9253 64.1942 13.9386C65.2132 12.952 66.5696 12.3946 68.1259 12.3946C69.6821 12.3946 71.0385 12.952 72.0574 13.9386C73.0763 14.9253 73.6804 16.3538 73.6804 18.0003C73.6804 19.6469 73.0763 21.0754 72.0574 22.0621C71.0385 23.0487 69.6821 23.606 68.1259 23.606ZM45.3942 7.42065H51.0786V28.58H45.3942V7.42065ZM11.4552 28.58H16.6667V0L0 0V28.58H11.4552ZM83.0033 7.42065H80.5985V28.58H83.0033C85.5057 28.58 87.8016 27.6521 89.642 26.0792L86.9602 22.9463C85.8344 23.7711 84.4539 24.2384 83.0033 24.2384V11.7629C84.4539 11.7629 85.8344 12.2302 86.9602 13.055L89.642 9.92215C87.8016 8.34923 85.5057 7.42065 83.0033 7.42065Z" fill="white" />
-                </svg>
-              </div>
-
-              <h2 className="text-[24px] font-semibold text-white mb-2 tracking-wide">Chào mừng trở lại!</h2>
-              <p className="text-[#B5BAC1] text-[16px] mb-6">Chúng tôi rất vui mừng khi được gặp lại bạn!</p>
-
-              <form 
-                className="text-left" 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  alert(`Đăng nhập thành công với tài khoản: ${simulatedLoginAccount.email || simulatedLoginAccount.username}!\n\n(Đây là trang mô phỏng đăng nhập Discord)`);
-                  setSimulatedLoginAccount(null);
-                }}
-              >
-                <div className="mb-4">
-                  <label className="block text-[12px] font-bold text-[#B5BAC1] uppercase mb-2">Email hoặc Số điện thoại <span className="text-red-400">*</span></label>
-                  <input
-                    type="text"
-                    value={simulatedLoginAccount.email || simulatedLoginAccount.username}
-                    readOnly
-                    className="block w-full px-4 py-3 bg-[#1E1F22] border-none rounded-[3px] text-base text-zinc-200 focus:outline-none"
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <label className="block text-[12px] font-bold text-[#B5BAC1] uppercase mb-2">Mật khẩu <span className="text-red-400">*</span></label>
-                  <input
-                    type="password"
-                    value={simulatedLoginAccount.password || ''}
-                    readOnly
-                    className="block w-full px-4 py-3 bg-[#1E1F22] border-none rounded-[3px] text-base text-zinc-200 focus:outline-none"
-                  />
-                  <a href="#" className="text-[14px] text-[#00A8FC] hover:underline mt-2 inline-block">Quên mật khẩu?</a>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-medium py-3 rounded-[3px] transition-colors text-base"
-                >
-                  Đăng nhập
-                </button>
-                
-                <div className="mt-4 text-[14px]">
-                  <span className="text-[#949BA4]">Cần một tài khoản? </span>
-                  <a href="#" className="text-[#00A8FC] hover:underline">Đăng ký</a>
                 </div>
               </form>
             </motion.div>
