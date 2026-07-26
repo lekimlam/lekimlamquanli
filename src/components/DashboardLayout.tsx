@@ -136,33 +136,13 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
                 </div>
               )}
               <div className={deviceMode === 'mobile' ? 'p-4 pt-10 h-full overflow-y-auto hide-scrollbar' : 'h-full'}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {children}
-                  </motion.div>
-                </AnimatePresence>
+                {children}
               </div>
             </motion.div>
             
             {/* Real Mobile View - No phone frame */}
             <div className="block sm:hidden w-full h-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {children}
-                </motion.div>
-              </AnimatePresence>
+              {children}
             </div>
           </div>
         </div>

@@ -51,10 +51,18 @@ export default function App() {
               onTabChange={setActiveTab} 
               onLogout={handleLogout}
             >
-              {activeTab === 'overview' && <DashboardOverview />}
-              {activeTab === 'accounts' && <AccountList />}
-              {activeTab === 'discord' && <DiscordAccountList />}
-              {activeTab === 'music' && <MusicSection />}
+              <div className={activeTab === 'overview' ? 'block h-full' : 'hidden'}>
+                <DashboardOverview />
+              </div>
+              <div className={activeTab === 'accounts' ? 'block h-full' : 'hidden'}>
+                <AccountList />
+              </div>
+              <div className={activeTab === 'discord' ? 'block h-full' : 'hidden'}>
+                <DiscordAccountList />
+              </div>
+              <div className={activeTab === 'music' ? 'block h-full' : 'hidden'}>
+                <MusicSection />
+              </div>
             </DashboardLayout>
           </motion.div>
         )}

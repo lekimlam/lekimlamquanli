@@ -32,6 +32,7 @@ export default function DiscordAccountList() {
   const [formData, setFormData] = useState({
     discordId: '',
     username: '',
+    email: '',
     password: '',
     discriminator: '0',
     avatarUrl: '',
@@ -56,6 +57,7 @@ export default function DiscordAccountList() {
       setFormData({
         discordId: account.discordId,
         username: account.username,
+        email: account.email || '',
         password: account.password || '',
         discriminator: account.discriminator,
         avatarUrl: account.avatarUrl,
@@ -66,6 +68,7 @@ export default function DiscordAccountList() {
       setFormData({
         discordId: '',
         username: '',
+        email: '',
         password: '',
         discriminator: '0',
         avatarUrl: `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}.png`,
@@ -143,6 +146,7 @@ export default function DiscordAccountList() {
           <thead className="bg-zinc-950/50 text-zinc-400 border-b border-zinc-800">
             <tr>
               <th className="px-6 py-4 font-medium">Người dùng</th>
+              <th className="px-6 py-4 font-medium">Email</th>
               <th className="px-6 py-4 font-medium">Mật khẩu</th>
               <th className="px-6 py-4 font-medium">Discord ID</th>
               <th className="px-6 py-4 font-medium">Trạng thái</th>
@@ -166,6 +170,9 @@ export default function DiscordAccountList() {
                       </span>
                     </div>
                   </div>
+                </td>
+                <td className="px-6 py-4 text-zinc-400">
+                  {account.email ? account.email : <span className="text-zinc-600 italic">Chưa đặt</span>}
                 </td>
                 <td className="px-6 py-4 text-zinc-400">
                   {account.password ? '••••••••' : <span className="text-zinc-600 italic">Chưa đặt</span>}
@@ -203,7 +210,7 @@ export default function DiscordAccountList() {
             
             {filteredAccounts.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
                   Không tìm thấy tài khoản Discord nào.
                 </td>
               </tr>
@@ -238,6 +245,16 @@ export default function DiscordAccountList() {
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                    placeholder="Nhập email"
                   />
                 </div>
                 <div>
