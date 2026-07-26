@@ -4,7 +4,6 @@ import { Users, UserPlus, Music, MessageSquare } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const data = [
-  { name: 'T2', accounts: 4000, discord: 2400 },
   { name: 'T3', accounts: 3000, discord: 1398 },
   { name: 'T4', accounts: 2000, discord: 9800 },
   { name: 'T5', accounts: 2780, discord: 3908 },

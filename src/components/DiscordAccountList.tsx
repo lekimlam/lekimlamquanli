@@ -32,6 +32,7 @@ export default function DiscordAccountList() {
   const [formData, setFormData] = useState({
     discordId: '',
     username: '',
+    password: '',
     discriminator: '0',
     avatarUrl: '',
     status: 'online' as 'online' | 'idle' | 'dnd' | 'offline'
@@ -55,6 +56,7 @@ export default function DiscordAccountList() {
       setFormData({
         discordId: account.discordId,
         username: account.username,
+        password: account.password || '',
         discriminator: account.discriminator,
         avatarUrl: account.avatarUrl,
         status: account.status
@@ -64,6 +66,7 @@ export default function DiscordAccountList() {
       setFormData({
         discordId: '',
         username: '',
+        password: '',
         discriminator: '0',
         avatarUrl: `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}.png`,
         status: 'online'
@@ -140,6 +143,7 @@ export default function DiscordAccountList() {
           <thead className="bg-zinc-950/50 text-zinc-400 border-b border-zinc-800">
             <tr>
               <th className="px-6 py-4 font-medium">Người dùng</th>
+              <th className="px-6 py-4 font-medium">Mật khẩu</th>
               <th className="px-6 py-4 font-medium">Discord ID</th>
               <th className="px-6 py-4 font-medium">Trạng thái</th>
               <th className="px-6 py-4 font-medium">Ngày tham gia</th>
@@ -162,6 +166,9 @@ export default function DiscordAccountList() {
                       </span>
                     </div>
                   </div>
+                </td>
+                <td className="px-6 py-4 text-zinc-400">
+                  {account.password ? '••••••••' : <span className="text-zinc-600 italic">Chưa đặt</span>}
                 </td>
                 <td className="px-6 py-4 text-zinc-400 font-mono text-xs">{account.discordId}</td>
                 <td className="px-6 py-4">
@@ -196,7 +203,7 @@ export default function DiscordAccountList() {
             
             {filteredAccounts.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
                   Không tìm thấy tài khoản Discord nào.
                 </td>
               </tr>
@@ -231,6 +238,16 @@ export default function DiscordAccountList() {
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Mật khẩu</label>
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-[#5865F2]/50 focus:border-[#5865F2]/50 transition-colors"
+                    placeholder={editingAccount ? "Để trống nếu không muốn đổi" : "Nhập mật khẩu"}
                   />
                 </div>
                 <div>

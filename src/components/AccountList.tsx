@@ -31,6 +31,7 @@ export default function AccountList() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    password: '',
     role: 'user',
     status: 'active' as 'active' | 'inactive'
   });
@@ -57,6 +58,7 @@ export default function AccountList() {
       setFormData({
         username: account.username,
         email: account.email,
+        password: account.password || '',
         role: account.role,
         status: account.status
       });
@@ -65,6 +67,7 @@ export default function AccountList() {
       setFormData({
         username: '',
         email: '',
+        password: '',
         role: 'user',
         status: 'active'
       });
@@ -120,6 +123,7 @@ export default function AccountList() {
           <thead className="bg-zinc-950/50 text-zinc-400 border-b border-zinc-800">
             <tr>
               <th className="px-6 py-4 font-medium">Tên đăng nhập</th>
+              <th className="px-6 py-4 font-medium">Mật khẩu</th>
               <th className="px-6 py-4 font-medium">Email</th>
               <th className="px-6 py-4 font-medium">Vai trò</th>
               <th className="px-6 py-4 font-medium">Trạng thái</th>
@@ -135,6 +139,9 @@ export default function AccountList() {
                     <span className="font-medium text-zinc-200">{account.username}</span>
                     {account.role === 'admin' && <ShieldAlert size={14} className="text-orange-500" title="Admin" />}
                   </div>
+                </td>
+                <td className="px-6 py-4 text-zinc-400">
+                  {account.password ? '••••••••' : <span className="text-zinc-600 italic">Chưa đặt</span>}
                 </td>
                 <td className="px-6 py-4 text-zinc-400">{account.email}</td>
                 <td className="px-6 py-4">
@@ -177,7 +184,7 @@ export default function AccountList() {
             
             {filteredAccounts.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
                   Không tìm thấy tài khoản nào phù hợp.
                 </td>
               </tr>
@@ -222,6 +229,16 @@ export default function AccountList() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Mật khẩu</label>
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="block w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/50 transition-colors"
+                    placeholder={editingAccount ? "Để trống nếu không muốn đổi" : "Nhập mật khẩu"}
                   />
                 </div>
                 <div>

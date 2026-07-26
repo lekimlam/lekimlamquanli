@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone, MessageSquare, PieChart } from 'lucide-react';
+import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone, MessageSquare, PieChart, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardLayoutProps {
@@ -13,6 +13,7 @@ type DeviceMode = 'desktop' | 'mobile';
 
 export default function DashboardLayout({ activeTab, onTabChange, onLogout, children }: DashboardLayoutProps) {
   const [deviceMode, setDeviceMode] = useState<DeviceMode>('desktop');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { id: 'overview', label: 'Tổng quan', icon: PieChart },
@@ -22,12 +23,28 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
   ];
 
   return (
-    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+    <div className="flex h-screen bg-zinc-950 overflow-hidden relative">
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 border-r border-zinc-800 bg-zinc-900/50 flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-zinc-800">
-          <LayoutDashboard className="text-orange-500 mr-3" size={24} />
-          <h1 className="font-semibold text-zinc-100 tracking-tight">Admin Portal</h1>
+      <aside className={`w-64 flex-shrink-0 border-r border-zinc-800 bg-zinc-950 flex flex-col absolute inset-y-0 left-0 z-50 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800">
+          <div className="flex items-center">
+            <LayoutDashboard className="text-orange-500 mr-3" size={24} />
+            <h1 className="font-semibold text-zinc-100 tracking-tight">Admin Portal</h1>
+          </div>
+          <button 
+            className="md:hidden text-zinc-400 hover:text-white"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X size={20} />
+          </button>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
@@ -36,7 +53,10 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
             return (
               <button
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
+                onClick={() => {
+                  onTabChange(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
                     ? 'bg-orange-500/10 text-orange-400'
@@ -51,7 +71,7 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
         </nav>
 
         <div className="p-4 border-t border-zinc-800">
-          <div className="flex items-center justify-between px-3 py-2 bg-zinc-950 rounded-lg border border-zinc-800">
+          <div className="flex items-center justify-between px-3 py-2 bg-zinc-900 rounded-lg border border-zinc-800">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 font-bold text-xs">
                 LL
@@ -74,11 +94,19 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-zinc-950">
-        <header className="h-16 flex items-center justify-between px-8 border-b border-zinc-800 bg-zinc-950 flex-shrink-0">
-          <h2 className="text-lg font-medium text-zinc-100">
-            {navItems.find((item) => item.id === activeTab)?.label}
-          </h2>
-          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1 rounded-lg">
+        <header className="h-16 flex items-center justify-between px-4 md:px-8 border-b border-zinc-800 bg-zinc-950 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <button 
+              className="md:hidden text-zinc-400 hover:text-white"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <h2 className="text-lg font-medium text-zinc-100">
+              {navItems.find((item) => item.id === activeTab)?.label}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 p-1 rounded-lg hidden sm:flex">
             <button 
               onClick={() => setDeviceMode('desktop')}
               className={`p-1.5 rounded-md transition-colors ${deviceMode === 'desktop' ? 'bg-zinc-800 text-orange-400' : 'text-zinc-500 hover:text-zinc-300'}`} 
@@ -96,14 +124,14 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
           </div>
         </header>
         <div className="flex-1 overflow-hidden relative bg-zinc-950">
-          <div className="absolute inset-0 overflow-auto flex justify-center items-start p-8">
+          <div className="absolute inset-0 overflow-auto flex justify-center items-start p-4 md:p-8">
             <motion.div
               layout
-              className={`${deviceMode === 'mobile' ? 'w-[375px] min-h-[812px] bg-zinc-950 border-[8px] border-zinc-800 rounded-[3rem] overflow-hidden shadow-2xl relative' : 'w-full max-w-6xl'}`}
+              className={`${deviceMode === 'mobile' ? 'hidden sm:block w-[375px] min-h-[812px] bg-zinc-950 border-[8px] border-zinc-800 rounded-[3rem] overflow-hidden shadow-2xl relative' : 'hidden sm:block w-full max-w-6xl'}`}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               {deviceMode === 'mobile' && (
-                <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-50 pointer-events-none">
+                <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-50 pointer-events-none hidden sm:flex">
                   <div className="w-32 h-6 bg-zinc-800 rounded-b-3xl"></div>
                 </div>
               )}
@@ -121,6 +149,21 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
                 </AnimatePresence>
               </div>
             </motion.div>
+            
+            {/* Real Mobile View - No phone frame */}
+            <div className="block sm:hidden w-full h-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {children}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </main>
