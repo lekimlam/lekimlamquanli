@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Smartphone, Wifi, Battery, Signal, Plus, Play, MoreVertical, ShieldCheck, Clock, Settings, RefreshCw } from 'lucide-react';
 import GoogleClone from './GoogleClone';
 import PlayStore from './PlayStore';
+import FileManager from './FileManager';
 
 export default function VirtualMachine() {
   const [activeDevice, setActiveDevice] = useState<string | null>('device-1');
@@ -184,6 +185,10 @@ export default function VirtualMachine() {
                   ) : activeApp === 'Google Play' ? (
                     <div className="flex-1 overflow-hidden relative bg-white">
                        <PlayStore />
+                    </div>
+                  ) : activeApp === 'Files' ? (
+                    <div className="flex-1 overflow-hidden relative bg-white">
+                       <FileManager />
                     </div>
                   ) : (
                     <iframe 
