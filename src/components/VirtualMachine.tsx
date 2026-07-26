@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Smartphone, Wifi, Battery, Signal, Plus, Play, MoreVertical, ShieldCheck, Clock, Settings, RefreshCw } from 'lucide-react';
+import GoogleClone from './GoogleClone';
 
 export default function VirtualMachine() {
   const [activeDevice, setActiveDevice] = useState<string | null>('device-1');
@@ -21,6 +22,20 @@ export default function VirtualMachine() {
         return 'https://mkremins.github.io/jsnes/';
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (activeApp && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        // Prevent host scrolling when playing games in the VM
+        // Chrome app handles its own inputs, but for generic iframe games, we stop scrolling
+        if (activeApp !== 'Chrome') {
+          e.preventDefault();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeApp]);
 
   const handleConnect = () => {
     setIsConnecting(true);
@@ -161,12 +176,18 @@ export default function VirtualMachine() {
               {activeApp ? (
                 <div className="absolute inset-0 pt-7 pb-10 z-10 bg-white flex flex-col">
                   {/* Inside App */}
-                  <iframe 
-                    src={getAppUrl(activeApp)}
-                    className="flex-1 w-full border-none bg-white"
-                    title={activeApp}
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                  />
+                  {activeApp === 'Chrome' ? (
+                    <div className="flex-1 overflow-hidden relative bg-zinc-950">
+                       <GoogleClone />
+                    </div>
+                  ) : (
+                    <iframe 
+                      src={getAppUrl(activeApp)}
+                      className="flex-1 w-full border-none bg-white"
+                      title={activeApp}
+                      sandbox="allow-same-origin allow-scripts allow-forms"
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="relative z-10 flex-1 pt-12 px-4 pb-24 flex flex-col justify-between">

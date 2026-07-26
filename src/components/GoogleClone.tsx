@@ -149,13 +149,6 @@ export default function GoogleClone() {
             className="flex-1 bg-transparent border-none focus:outline-none text-sm text-zinc-300 font-mono"
             spellCheck={false}
           />
-          <button 
-            onClick={() => activeTab.url && window.open(activeTab.url, '_blank')}
-            className="p-1.5 ml-2 text-zinc-500 hover:text-zinc-300 transition-colors shrink-0"
-            title="Open in real browser tab"
-          >
-            <ExternalLink size={16} />
-          </button>
         </div>
       </div>
 
@@ -227,7 +220,7 @@ export default function GoogleClone() {
                   
                   <div className="mt-12 text-center">
                     <p className="text-zinc-600 text-xs">
-                      Note: Some websites like Discord block being embedded. Use the <ExternalLink size={12} className="inline mx-1" /> icon in the navigation bar to open them in a real tab.
+                      Webpages are securely isolated. Popups and external tab navigation are blocked for safety.
                     </p>
                   </div>
                 </div>
@@ -237,7 +230,7 @@ export default function GoogleClone() {
                 src={tab.url}
                 className="w-full h-full border-none bg-white"
                 title={tab.title}
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                sandbox="allow-same-origin allow-scripts allow-forms"
               />
             )}
           </div>
