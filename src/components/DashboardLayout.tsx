@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone, MessageSquare, PieChart, Menu, X } from 'lucide-react';
+import { Users, Music, LogOut, LayoutDashboard, Monitor, Smartphone, MessageSquare, PieChart, Menu, X, Chrome } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface DashboardLayoutProps {
@@ -19,6 +19,7 @@ export default function DashboardLayout({ activeTab, onTabChange, onLogout, chil
     { id: 'overview', label: 'Tổng quan', icon: PieChart },
     { id: 'accounts', label: 'Quản lý tài khoản', icon: Users },
     { id: 'discord', label: 'Tài khoản Discord', icon: MessageSquare },
+    { id: 'google', label: 'Google Clone', icon: Chrome },
     { id: 'music', label: 'Nhạc SoundCloud', icon: Music },
   ];
 

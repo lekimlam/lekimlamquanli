@@ -19,3 +19,14 @@ export interface DiscordAccount {
   status: 'online' | 'idle' | 'dnd' | 'offline';
   joinedAt: string;
 }
+
+export interface GoogleAccount {
+  id: string;
+  email: string;
+  password?: string;
+  recoveryEmail?: string;
+  displayName: string;
+  avatarUrl: string;
+  status: 'active' | 'suspended' | 'needs_verification';
+  lastLogin: string;
+}
