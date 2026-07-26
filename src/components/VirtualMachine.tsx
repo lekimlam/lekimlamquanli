@@ -19,7 +19,7 @@ export default function VirtualMachine() {
   };
 
   return (
-    <div className="h-full flex flex-col space-y-6">
+    <div className="min-h-full flex flex-col space-y-6 pb-8 lg:pb-0">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-white mb-1">Cloud Phone (Android)</h2>
@@ -30,8 +30,7 @@ export default function VirtualMachine() {
           Thuê Cloud Phone mới
         </button>
       </div>
-
-      <div className="flex-1 flex flex-col lg:flex-row gap-6 h-full min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row gap-6">
         {/* Device List */}
         <div className="w-full lg:w-80 flex flex-col gap-4">
           <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4 cursor-pointer hover:border-blue-500/50 transition-all shadow-lg ring-1 ring-blue-500/20">
@@ -108,7 +107,7 @@ export default function VirtualMachine() {
         </div>
 
         {/* Device Viewport */}
-        <div className="flex-1 bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden flex items-center justify-center p-4 lg:p-8 relative">
+        <div className="flex-1 min-h-[600px] lg:min-h-0 bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden flex items-center justify-center p-4 lg:p-8 relative">
           {!isConnected ? (
             <div className="text-center">
               <div className="w-24 h-24 mx-auto bg-zinc-950 rounded-2xl border border-zinc-800 flex items-center justify-center mb-6 shadow-xl">
@@ -124,7 +123,7 @@ export default function VirtualMachine() {
               </div>
             </div>
           ) : (
-            <div className="w-full max-w-[360px] h-[720px] max-h-full bg-black rounded-[2.5rem] border-[8px] border-zinc-800 shadow-2xl relative overflow-hidden flex flex-col ring-1 ring-white/10">
+            <div className="w-full max-w-[360px] h-[720px] bg-black rounded-[2.5rem] border-[8px] border-zinc-800 shadow-2xl relative overflow-hidden flex flex-col ring-1 ring-white/10 shrink-0">
               {/* Android Status Bar */}
               <div className="h-7 bg-zinc-900/50 flex items-center justify-between px-5 text-[10px] text-white absolute top-0 w-full z-10 font-medium">
                 <span>09:41</span>
