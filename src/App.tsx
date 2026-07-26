@@ -51,16 +51,16 @@ export default function App() {
               onTabChange={setActiveTab} 
               onLogout={handleLogout}
             >
-              <div className={activeTab === 'overview' ? 'block h-full' : 'hidden'}>
+              <div className={activeTab === 'overview' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <DashboardOverview />
               </div>
-              <div className={activeTab === 'accounts' ? 'block h-full' : 'hidden'}>
+              <div className={activeTab === 'accounts' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <AccountList />
               </div>
-              <div className={activeTab === 'discord' ? 'block h-full' : 'hidden'}>
+              <div className={activeTab === 'discord' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <DiscordAccountList />
               </div>
-              <div className={activeTab === 'music' ? 'block h-full' : 'hidden'}>
+              <div className={activeTab === 'music' ? 'block h-full relative z-10' : 'absolute opacity-0 pointer-events-none -left-[9999px]'}>
                 <MusicSection />
               </div>
             </DashboardLayout>

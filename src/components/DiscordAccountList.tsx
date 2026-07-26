@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash2, Edit2, MessageSquare, X, ExternalLink } from 'lucide-react';
+import { Plus, Search, Trash2, Edit2, MessageSquare, X, ExternalLink, Eye } from 'lucide-react';
 import { DiscordAccount } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -186,6 +186,16 @@ export default function DiscordAccountList() {
                 <td className="px-6 py-4 text-zinc-500">{account.joinedAt}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
+                    <button 
+                      onClick={() => {
+                        const text = `Email: ${account.email || 'Chưa đặt'}\nMật khẩu: ${account.password || 'Chưa đặt'}`;
+                        navigator.clipboard.writeText(text);
+                      }}
+                      className="p-1.5 text-zinc-500 hover:text-green-400 transition-colors" 
+                      title="Sao chép Email & Mật khẩu"
+                    >
+                      <Eye size={16} />
+                    </button>
                     <button className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" title="Nhắn tin">
                       <MessageSquare size={16} />
                     </button>

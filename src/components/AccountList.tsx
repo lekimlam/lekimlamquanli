@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash2, Edit2, ShieldAlert, X } from 'lucide-react';
+import { Plus, Search, Trash2, Edit2, ShieldAlert, X, Eye } from 'lucide-react';
 import { Account } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -162,6 +162,16 @@ export default function AccountList() {
                 <td className="px-6 py-4 text-zinc-500">{account.createdAt}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
+                    <button 
+                      onClick={() => {
+                        const text = `Email: ${account.email || 'Chưa đặt'}\nMật khẩu: ${account.password || 'Chưa đặt'}`;
+                        navigator.clipboard.writeText(text);
+                      }}
+                      className="p-1.5 text-zinc-500 hover:text-green-400 transition-colors" 
+                      title="Sao chép Email & Mật khẩu"
+                    >
+                      <Eye size={16} />
+                    </button>
                     <button 
                       onClick={() => handleOpenModal(account)}
                       className="p-1.5 text-zinc-500 hover:text-zinc-300 transition-colors" 
