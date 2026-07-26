@@ -5,17 +5,35 @@ export default function VirtualMachine() {
   const [activeDevice, setActiveDevice] = useState<string | null>('device-1');
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [activeApp, setActiveApp] = useState<string | null>(null);
+
+  const getAppUrl = (appName: string) => {
+    switch (appName) {
+      case 'Chrome':
+      case 'Google Play':
+        return 'https://www.google.com/webhp?igu=1';
+      case 'Settings':
+      case 'Files':
+      case 'Auto Clicker':
+        return 'https://en.wikipedia.org/wiki/Android';
+      default:
+        // Default to a retro emulator for games
+        return 'https://mkremins.github.io/jsnes/';
+    }
+  };
 
   const handleConnect = () => {
     setIsConnecting(true);
     setTimeout(() => {
       setIsConnecting(false);
       setIsConnected(true);
+      setActiveApp(null);
     }, 2500);
   };
 
   const handleDisconnect = () => {
     setIsConnected(false);
+    setActiveApp(null);
   };
 
   return (
@@ -140,41 +158,54 @@ export default function VirtualMachine() {
               {/* Android Home Screen Wallpaper */}
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 z-0"></div>
 
-              {/* Apps Grid */}
-              <div className="relative z-10 flex-1 pt-12 px-4 pb-24">
-                <div className="mb-6 flex justify-center">
-                  <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-2 text-white/90 text-sm font-medium w-full max-w-[240px]">
-                    <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="G" />
-                    <span className="flex-1 opacity-70">Search...</span>
+              {activeApp ? (
+                <div className="absolute inset-0 pt-7 pb-10 z-10 bg-white flex flex-col">
+                  {/* Inside App */}
+                  <iframe 
+                    src={getAppUrl(activeApp)}
+                    className="flex-1 w-full border-none bg-white"
+                    title={activeApp}
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                  />
+                </div>
+              ) : (
+                <div className="relative z-10 flex-1 pt-12 px-4 pb-24 flex flex-col justify-between">
+                  <div>
+                    <div className="mb-6 flex justify-center">
+                      <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-2 text-white/90 text-sm font-medium w-full max-w-[240px] cursor-text" onClick={() => setActiveApp('Chrome')}>
+                        <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="G" />
+                        <span className="flex-1 opacity-70">Search...</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-y-6 gap-x-2">
+                      <AppIcon name="Google Play" icon="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Google_Play_Store_icon_2022.svg/1024px-Google_Play_Store_icon_2022.svg.png" onClick={() => setActiveApp('Google Play')} />
+                      <AppIcon name="Settings" icon="https://cdn-icons-png.flaticon.com/512/2950/2950113.png" onClick={() => setActiveApp('Settings')} />
+                      <AppIcon name="Files" icon="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" onClick={() => setActiveApp('Files')} />
+                      <AppIcon name="Chrome" icon="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" onClick={() => setActiveApp('Chrome')} />
+                      
+                      <AppIcon name="Roblox" icon="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png" onClick={() => setActiveApp('Roblox')} />
+                      <AppIcon name="Genshin" icon="https://play-lh.googleusercontent.com/So91qs_eRRrati6BUs8HuqiCkyRXbGH9h4qOonP-qLhV5G-1f6m-i68m3Z_1x1Q1nQ=w240-h480-rw" onClick={() => setActiveApp('Genshin')} />
+                      <AppIcon name="AFK Arena" icon="https://play-lh.googleusercontent.com/R3aBndbC_iOaU8rMewv5f_c-WSTTfB3T6015R5yVjZ2m6Mhw8k7eXk39R1c1zB7cQQ=w240-h480-rw" onClick={() => setActiveApp('AFK Arena')} />
+                      <AppIcon name="Auto Clicker" icon="https://play-lh.googleusercontent.com/yF-4r_vPqYgG4hR_T21fD3U_Mv_N7gA-nFvV9wR_S7zM-g3mE_9T2fD1c-w_V4mZ_w=w240-h480-rw" onClick={() => setActiveApp('Auto Clicker')} />
+                    </div>
+                  </div>
+                  
+                  {/* Android Dock */}
+                  <div className="bg-white/20 backdrop-blur-md rounded-3xl p-3 flex justify-around mb-2">
+                    <AppIcon name="Phone" icon="https://cdn-icons-png.flaticon.com/512/3014/3014736.png" hideName onClick={() => setActiveApp('Phone')} />
+                    <AppIcon name="Messages" icon="https://cdn-icons-png.flaticon.com/512/1044/1044951.png" hideName onClick={() => setActiveApp('Messages')} />
+                    <AppIcon name="Contacts" icon="https://cdn-icons-png.flaticon.com/512/3014/3014737.png" hideName onClick={() => setActiveApp('Contacts')} />
+                    <AppIcon name="Camera" icon="https://cdn-icons-png.flaticon.com/512/3014/3014739.png" hideName onClick={() => setActiveApp('Camera')} />
                   </div>
                 </div>
-
-                <div className="grid grid-cols-4 gap-y-6 gap-x-2">
-                  <AppIcon name="Google Play" icon="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Google_Play_Store_icon_2022.svg/1024px-Google_Play_Store_icon_2022.svg.png" />
-                  <AppIcon name="Settings" icon="https://cdn-icons-png.flaticon.com/512/2950/2950113.png" />
-                  <AppIcon name="Files" icon="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" />
-                  <AppIcon name="Chrome" icon="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" />
-                  
-                  <AppIcon name="Roblox" icon="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png" />
-                  <AppIcon name="Genshin" icon="https://play-lh.googleusercontent.com/So91qs_eRRrati6BUs8HuqiCkyRXbGH9h4qOonP-qLhV5G-1f6m-i68m3Z_1x1Q1nQ=w240-h480-rw" />
-                  <AppIcon name="AFK Arena" icon="https://play-lh.googleusercontent.com/R3aBndbC_iOaU8rMewv5f_c-WSTTfB3T6015R5yVjZ2m6Mhw8k7eXk39R1c1zB7cQQ=w240-h480-rw" />
-                  <AppIcon name="Auto Clicker" icon="https://play-lh.googleusercontent.com/yF-4r_vPqYgG4hR_T21fD3U_Mv_N7gA-nFvV9wR_S7zM-g3mE_9T2fD1c-w_V4mZ_w=w240-h480-rw" />
-                </div>
-              </div>
-
-              {/* Android Dock */}
-              <div className="relative z-10 mx-3 mb-4 bg-white/20 backdrop-blur-md rounded-3xl p-3 flex justify-around">
-                <AppIcon name="Phone" icon="https://cdn-icons-png.flaticon.com/512/3014/3014736.png" hideName />
-                <AppIcon name="Messages" icon="https://cdn-icons-png.flaticon.com/512/1044/1044951.png" hideName />
-                <AppIcon name="Contacts" icon="https://cdn-icons-png.flaticon.com/512/3014/3014737.png" hideName />
-                <AppIcon name="Camera" icon="https://cdn-icons-png.flaticon.com/512/3014/3014739.png" hideName />
-              </div>
+              )}
 
               {/* Android Navigation Bar */}
-              <div className="absolute bottom-0 w-full h-10 bg-black/50 backdrop-blur flex justify-around items-center px-8 z-20">
-                <div className="w-4 h-4 bg-white/80 rounded-sm"></div>
-                <div className="w-4 h-4 bg-white/80 rounded-full"></div>
-                <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-white/80 transform rotate-90"></div>
+              <div className="absolute bottom-0 w-full h-10 bg-black/80 backdrop-blur flex justify-around items-center px-8 z-20">
+                <button className="w-4 h-4 bg-white/80 rounded-sm hover:bg-white transition-colors"></button>
+                <button onClick={() => setActiveApp(null)} className="w-4 h-4 bg-white/80 rounded-full hover:bg-white transition-colors" title="Home"></button>
+                <button onClick={() => setActiveApp(null)} className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-white/80 transform rotate-90 hover:border-white transition-colors" title="Back"></button>
               </div>
               
               {/* Sidebar Menu Toolkit (Cloud Phone typical features) */}
@@ -191,9 +222,9 @@ export default function VirtualMachine() {
   );
 }
 
-function AppIcon({ name, icon, hideName = false }: { name: string, icon: string, hideName?: boolean }) {
+function AppIcon({ name, icon, hideName = false, onClick }: { name: string, icon: string, hideName?: boolean, onClick?: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+    <div onClick={onClick} className="flex flex-col items-center gap-1.5 cursor-pointer hover:scale-105 transition-transform active:scale-95">
       <div className="w-12 h-12 bg-white rounded-xl shadow-sm overflow-hidden flex items-center justify-center p-0.5">
         <img src={icon} alt={name} className="w-full h-full object-cover rounded-[10px]" />
       </div>
